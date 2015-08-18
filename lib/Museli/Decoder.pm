@@ -3,30 +3,48 @@ package Museli::Decoder;
 use strict;
 use warnings;
 
+use Museli::Util;
+
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-sub decode_varint {
+sub decode_int {
     my @bytes = @_;
 
-    my $s = 0; # counter
-    my $n = 0; # int to lay our bit patterns on
+    my $count = 0; # counter
+    my $bits  = 0; # int to lay our bit patterns on
 
     foreach my $i ( 0 .. @bytes ) {
         my $b = $bytes[$i];
-        $n |= ( $b & 0x7f ) << $s;
-        $s += 7;
+        $bits |= to_byte( $b ) << $count;
+        $count += 7;
 
         if ( ( $b & 0x80 ) == 0 ) {
-            return $n, $i+1;
+            return $bits, $i+1;
         }
 
-        if ( $s > 63 ) {
-            die '[BAD VARINT] too many continuation bits';
+        if ( $count > 63 ) {
+            die '[BAD INT] too many continuation bits';
         }
     }
 
-    die '[BAD VARINT] missing continuation bits';
+    die '[BAD INT] missing continuation bits';
+}
+
+sub decode_float {
+    my @bytes = @_;
+
+    die '[BAD FLOAT] A float must be exact 4 bytes'
+        if scalar @bytes != 4;
+
+    my $bits = 0; # int to lay our bit pattersn on
+
+    $bits |= $bytes[0];
+    $bits |= $bytes[1] << 8;
+    $bits |= $bytes[2] << 16;
+    $bits |= $bytes[3] << 24;
+
+    return unpack('f', pack('N', $bits)), 4; # length is always 4
 }
 
 1;
