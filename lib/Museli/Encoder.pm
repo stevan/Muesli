@@ -31,6 +31,12 @@ sub encode_float {
     return @bytes;
 }
 
+sub encode_string {
+    my $string = $_[0];
+    my @bytes  = map encode_int( $_ ), unpack("U*", $string);
+    return @bytes;
+}
+
 1;
 
 __END__

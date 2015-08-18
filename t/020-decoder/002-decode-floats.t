@@ -14,7 +14,7 @@ BEGIN {
 
 {
     my ($val, $len) = Museli::Decoder::decode_float(
-        0b00111110, 0b00100000, 0b00000000, 0b00000000
+        0, [ 0b00111110, 0b00100000, 0b00000000, 0b00000000 ]
     );
 
     is($val, 0.15625, '... 0.15625 decoded as expected');
