@@ -14,8 +14,8 @@ sub decode_int {
     my $count = 0; # counter
     my $bits  = 0; # int to lay our bit patterns on
 
-    foreach my $i ( 0 .. @bytes ) {
-        my $b = $bytes[$i];
+    for ( my $i = 0; $i <= scalar @bytes; $i++ ) {
+        my $b = $bytes[ $i ];
         $bits |= to_byte( $b ) << $count;
         $count += 7;
 
