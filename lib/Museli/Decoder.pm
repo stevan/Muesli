@@ -9,10 +9,9 @@ our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 sub decode_int {
-    my $idx   = $_[0];
-    my $bytes = $_[1];
+    my ($idx, $bytes, %opts) = @_;
 
-    my $count = 0; # counter
+    my $count = 0; # bit-shift counter
     my $bits  = 0; # int to lay our bit patterns on
 
     for ( my $i = $idx; $i <= scalar @$bytes; $i++ ) {
@@ -31,8 +30,7 @@ sub decode_int {
 }
 
 sub decode_float {
-    my $idx   = $_[0];
-    my $bytes = $_[1];
+    my ($idx, $bytes, %opts) = @_;
 
     die '[BAD FLOAT] A float must be at least 4 bytes long, got truncated data'
         unless ($idx + 3) >= $#{$bytes};
@@ -47,13 +45,15 @@ sub decode_float {
 }
 
 sub decode_string {
-    my $idx    = $_[0];
-    my $bytes  = $_[1];
+    my ($idx, $bytes, %opts) = @_;
 
     my @cps;
-    do {
+    while ( $idx <= $#{$bytes} ) {
+        
         ($cps[ scalar @cps ], $idx) = decode_int( $idx, $bytes );
-    } while $idx <= $#{$bytes};
+
+        last if $opts{num_code_points} && scalar @cps == $opts{num_code_points};
+    }
 
     return pack('U*', @cps), $idx;
 }
