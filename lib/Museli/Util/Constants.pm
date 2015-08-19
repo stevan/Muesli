@@ -1,0 +1,42 @@
+package Museli::Util::Constants;
+
+use strict;
+use warnings;
+
+our $VERSION   = '0.01';
+our $AUTHORITY = 'cpan:STEVAN';
+
+our @EXPORT = qw(
+    INT   
+    FLOAT 
+    STRING
+    UNDEF 
+    HASH  
+    ARRAY 
+);
+
+sub import {
+    my $from    = shift;
+    my $to      = caller;
+    my @imports = @_ || @EXPORT;
+
+    no strict 'refs';
+    foreach my $i ( @imports ) {
+        *{ $to . '::' . $i } = \&{ $from .'::'. $i };
+    }
+}
+
+## --------------------------
+
+sub MAGIC_HEADER () { (0x3d, 0x6d, 0x73, 0x6c) } # =msl
+
+sub INT          () { 0x20 } # 0b00100000
+sub FLOAT        () { 0x22 } # 0b00100010
+sub STRING       () { 0x27 } # 0b00100111
+sub UNDEF        () { 0x25 } # 0b00100101
+sub HASH         () { 0x2a } # 0b00101010
+sub ARRAY        () { 0x2b } # 0b00101011
+
+1;
+
+__END__

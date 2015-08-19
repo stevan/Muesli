@@ -9,45 +9,28 @@ BEGIN {
     use_ok('Museli::Decoder');
 }
 
-{
-    my ($val, $size) = Museli::Decoder::decode_string( 
-        0, 
-        [ 
-            0b01100110, 0b01100001, 0b01100011, 0b10100111, 
-            0b00000110, 0b01100001, 0b01100100, 0b01100101 
-        ],
-    );
-
-    is($val, "fac\x{0327}ade", '... our binary data is façade');
-    is($size, 8, '... and it took 8 bytes');
-}
+use Museli::Util::Constants;
 
 {
     my ($val, $size) = Museli::Decoder::decode_string( 
         0, 
         [ 
-            0b01100110, 0b01100001, 0b01100011, 0b10100111, 
-            0b00000110, 0b01100001, 0b01100100, 0b01100101 
+            STRING,
+            0b00100000, 0b00001111, # length 
+            ( # tag  # varint
+                INT, 0b01100110,             # f
+                INT, 0b01100001,             # a
+                INT, 0b01100011,             # c 
+                INT, 0b10100111, 0b00000110, # \x{0327}
+                INT, 0b01100001,             # a
+                INT, 0b01100100,             # d
+                INT, 0b01100101,             # e
+            )
         ],
-        (num_code_points => 2)
     );
 
-    is($val, "fa", '... our binary data is fa');
-    is($size, 2, '... and it took 2 bytes');
-}
-
-{
-    my ($val, $size) = Museli::Decoder::decode_string( 
-        0, 
-        [ 
-            0b01100110, 0b01100001, 0b01100011, 0b10100111, 
-            0b00000110, 0b01100001, 0b01100100, 0b01100101 
-        ],
-        (num_code_points => 4)
-    );
-
-    is($val, "fac\x{0327}", '... our binary data is faç');
-    is($size, 5, '... and it took 5 bytes');
+    is($val, "fac\x{0327}ade", '... our binary data is fac\x{0327}ade');
+    is($size, 18, '... and it took 18 bytes');
 }
 
 done_testing;

@@ -3,13 +3,20 @@ package Museli::Decoder;
 use strict;
 use warnings;
 
-use Museli::Util;
+use Museli::Util::Converters;
+use Museli::Util::Constants;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 sub decode_int {
-    my ($idx, $bytes, %opts) = @_;
+    my $idx   = $_[0];
+    my $bytes = $_[1];
+
+    die '[BAD INT] Missing the INT tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
+        if $bytes->[ $idx ] != INT;
+
+    $idx++;
 
     my $count = 0; # bit-shift counter
     my $bits  = 0; # int to lay our bit patterns on
@@ -30,7 +37,13 @@ sub decode_int {
 }
 
 sub decode_float {
-    my ($idx, $bytes, %opts) = @_;
+    my $idx   = $_[0];
+    my $bytes = $_[1];
+
+    die '[BAD FLOAT] Missing the FLOAT tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
+        if $bytes->[ $idx ] != FLOAT;   
+
+    $idx++; 
 
     die '[BAD FLOAT] A float must be at least 4 bytes long, got truncated data'
         unless ($idx + 3) >= $#{$bytes};
@@ -45,14 +58,21 @@ sub decode_float {
 }
 
 sub decode_string {
-    my ($idx, $bytes, %opts) = @_;
+    my $idx   = $_[0];
+    my $bytes = $_[1];
+
+    die '[BAD STRING] Missing the STRING tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
+        if $bytes->[ $idx ] != STRING;  
+
+    $idx++;
+
+    my $length;
+    ($length, $idx) = decode_int( $idx, $bytes );
 
     my @cps;
     while ( $idx <= $#{$bytes} ) {
-        
         ($cps[ scalar @cps ], $idx) = decode_int( $idx, $bytes );
-
-        last if $opts{num_code_points} && scalar @cps == $opts{num_code_points};
+        last if scalar @cps == $length;
     }
 
     return pack('U*', @cps), $idx;
