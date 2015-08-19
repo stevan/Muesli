@@ -10,19 +10,21 @@ BEGIN {
     use_ok('Museli::Encoder');
 }
 
+use Museli::Util::Constants;
+
 is( 
     bin_fmt(Museli::Encoder::encode_string( "fac\x{0327}ade" )),
     (join ' ' => 
-        '00100111',          # tag
+        bin_fmt(STRING),          # tag
         '00100000 00001111', # length 
         (   # tag       # varint
-            '00100000', '01100110',            # f
-            '00100000', '01100001',            # a
-            '00100000', '01100011',            # c 
-            '00100000', '10100111 00000110',   # \x{0327}
-            '00100000', '01100001',            # a
-            '00100000', '01100100',            # d
-            '00100000', '01100101',            # e
+            bin_fmt(INT), '01100110',            # f
+            bin_fmt(INT), '01100001',            # a
+            bin_fmt(INT), '01100011',            # c 
+            bin_fmt(INT), '10100111 00000110',   # \x{0327}
+            bin_fmt(INT), '01100001',            # a
+            bin_fmt(INT), '01100100',            # d
+            bin_fmt(INT), '01100101',            # e
         )
     ),
     '... façade encoded as expected'

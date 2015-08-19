@@ -3,6 +3,7 @@ package Museli::Encoder;
 use strict;
 use warnings;
 
+use B;
 use Scalar::Util qw[ 
     reftype
     blessed 
@@ -16,9 +17,10 @@ our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 sub encode {
-    my $data = @_;
+    my ($data) = @_;
 
-    my @bytes;
+    my @bytes = (MAGIC_HEADER);
+
     if ( ref $data ) {
 
         die '[PANIC] Currently blessed items are not supported'
@@ -37,11 +39,11 @@ sub encode {
     }
     else { 
         if ( looks_like_number( $data ) ) {
-            if ( int($data) == $data ) {
-                push @bytes => encode_int( $data );
+            if ( B::svref_2object( \$data )->isa('B::NV') ) { # is a float?
+                push @bytes => encode_float( $data );
             }
             else {
-                push @bytes => encode_float( $data );
+                push @bytes => encode_int( $data );
             }
         }
         else {

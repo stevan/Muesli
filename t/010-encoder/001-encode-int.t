@@ -10,10 +10,12 @@ BEGIN {
     use_ok('Museli::Encoder');
 }
 
+use Museli::Util::Constants;
+
 is( 
     bin_fmt(Museli::Encoder::encode_int( 1 )),
     (join ' ' => 
-        '00100000', # tag 
+        bin_fmt(INT),
         '00000001',
     ),
     '... 1 encoded as expected'
@@ -22,7 +24,7 @@ is(
 is( 
     bin_fmt(Museli::Encoder::encode_int( 300 )),
     (join ' ' => 
-        '00100000', # tag 
+        bin_fmt(INT),
         '10101100 00000010',
     ),    
     '... 300 encoded as expected'
