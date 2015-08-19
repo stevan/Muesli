@@ -23,7 +23,7 @@ sub import {
 
 ## --------------------------
 
-sub to_byte { $_[0] & 0x7f }
+sub to_byte { $_[0] & 0xff }
 
 1;
 
