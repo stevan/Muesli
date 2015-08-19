@@ -16,7 +16,7 @@ sub decode_int {
 
     for ( my $i = $idx; $i <= scalar @$bytes; $i++ ) {
         my $b = $bytes->[ $i ];
-        $bits |= to_byte( $b ) << $count;
+        $bits |= ( $b & 0x7f ) << $count;
         $count += 7;
 
         return $bits, ($i + 1)

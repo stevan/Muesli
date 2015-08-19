@@ -12,7 +12,7 @@ sub encode_int {
     my $int = $_[0];
     my @bytes;
     while ( $int >= 0x80 ) {
-        my $b = to_byte( $int ) | 0x80;
+        my $b = ( $int & 0x7f ) | 0x80;
         push @bytes => $b;
         $int >>= 7;
     }
