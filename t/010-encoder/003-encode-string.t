@@ -16,7 +16,7 @@ is(
     bin_fmt(Museli::Encoder::encode_string( "fac\x{0327}ade" )),
     (join ' ' => 
         bin_fmt(STRING),          # tag
-        '00100000 00001111', # length 
+        bin_fmt(VARINT), '00001111', # length 
         (   # tag       # varint
             bin_fmt(VARINT), '01100110',            # f
             bin_fmt(VARINT), '01100001',            # a

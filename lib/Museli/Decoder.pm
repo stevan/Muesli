@@ -12,9 +12,11 @@ our $AUTHORITY = 'cpan:STEVAN';
 sub decode_int {
     my $idx   = $_[0];
     my $bytes = $_[1];
+    my $tag   = $bytes->[ $idx ];
 
-    die '[BAD INT] Missing the VARINT tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
-        if $bytes->[ $idx ] != VARINT;
+    die '[BAD INT] Missing the VARINT or ZIGZAG tags, instead found ' . (sprintf "%x" => $tag)
+        if $tag != VARINT
+        && $tag != ZIGZAG;
 
     $idx++;
 
@@ -26,9 +28,13 @@ sub decode_int {
         $bits |= ( $b & 0x7f ) << $count;
         $count += 7;
 
-        return $bits, ($i + 1)
-            if ( $b & 0x80 ) == 0;
+        if (( $b & 0x80 ) == 0) {
+            $bits = -(1 + (to_int32($bits) >> 1) )
+                if $tag == ZIGZAG;
 
+            return $bits, ($i + 1);
+        }
+        
         die '[BAD INT] too many continuation bits'
             if $count > 63;
     }
