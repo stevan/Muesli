@@ -8,6 +8,7 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 our @EXPORT = qw(
     to_byte
+    to_int32
 );
 
 sub import {
@@ -23,7 +24,8 @@ sub import {
 
 ## --------------------------
 
-sub to_byte { $_[0] & 0xff }
+sub to_byte  { $_[0] & 0xff     }
+sub to_int32 { $_[0] & 0xffffff }
 
 1;
 
