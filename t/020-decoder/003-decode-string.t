@@ -18,13 +18,13 @@ use Museli::Util::Constants;
             STRING,
             0b00100000, 0b00001111, # length 
             ( # tag  # varint
-                INT, 0b01100110,             # f
-                INT, 0b01100001,             # a
-                INT, 0b01100011,             # c 
-                INT, 0b10100111, 0b00000110, # \x{0327}
-                INT, 0b01100001,             # a
-                INT, 0b01100100,             # d
-                INT, 0b01100101,             # e
+                VARINT, 0b01100110,             # f
+                VARINT, 0b01100001,             # a
+                VARINT, 0b01100011,             # c 
+                VARINT, 0b10100111, 0b00000110, # \x{0327}
+                VARINT, 0b01100001,             # a
+                VARINT, 0b01100100,             # d
+                VARINT, 0b01100101,             # e
             )
         ],
     );

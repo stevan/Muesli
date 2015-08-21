@@ -64,13 +64,16 @@ sub encode_hash {
 
 sub encode_int {
     my $int   = $_[0];
-    my @bytes = (INT); # tag byte ...
+    my @bytes;
+
+    push @bytes => VARINT;
     while ( $int >= 0x80 ) {
         my $b = ( $int & 0x7f ) | 0x80;
         push @bytes => $b;
         $int >>= 7;
     }
     push @bytes => $int;
+
     return @bytes;
 }
 

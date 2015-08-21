@@ -15,7 +15,7 @@ use Museli::Util::Constants;
 is( 
     bin_fmt(Museli::Encoder::encode_int( 1 )),
     (join ' ' => 
-        bin_fmt(INT),
+        bin_fmt(VARINT),
         '00000001',
     ),
     '... 1 encoded as expected'
@@ -24,7 +24,7 @@ is(
 is( 
     bin_fmt(Museli::Encoder::encode_int( 300 )),
     (join ' ' => 
-        bin_fmt(INT),
+        bin_fmt(VARINT),
         '10101100 00000010',
     ),    
     '... 300 encoded as expected'

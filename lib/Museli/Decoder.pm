@@ -13,8 +13,8 @@ sub decode_int {
     my $idx   = $_[0];
     my $bytes = $_[1];
 
-    die '[BAD INT] Missing the INT tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
-        if $bytes->[ $idx ] != INT;
+    die '[BAD INT] Missing the VARINT tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
+        if $bytes->[ $idx ] != VARINT;
 
     $idx++;
 

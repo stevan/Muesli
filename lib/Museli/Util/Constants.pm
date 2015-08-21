@@ -9,7 +9,8 @@ our $AUTHORITY = 'cpan:STEVAN';
 our @EXPORT = qw(
     MAGIC_HEADER
     
-    INT   
+    VARINT   
+    ZIGZAG
     FLOAT 
     STRING
     UNDEF 
@@ -36,6 +37,7 @@ sub MAGIC_HEADER () { (0x3d, 0x6d, 0x73, 0x6c) } # =msl
                   Tag |  Hex |     Binary | Follow
     ------------------+------+----------- |-----------------------------------------
     VARINT            | 0x20 | 0b00100000 | <VARINT> - Varint variable length integer
+    ZIGZAG            | 0x21 | 0b00100001 | <ZIGZAG-VARINT> - Zigzag variable length integer    
     FLOAT             | 0x22 | 0b00100010 | <IEEE-FLOAT>
     STR_UTF8          | 0x27 | 0b00100111 | <LEN-VARINT> <UTF8> - utf8 string
     UNDEF             | 0x25 | 0b00100101 | None - Perl undef var; eg my $var= undef;
@@ -43,7 +45,8 @@ sub MAGIC_HEADER () { (0x3d, 0x6d, 0x73, 0x6c) } # =msl
     ARRAY             | 0x2b | 0b00101011 | <COUNT-VARINT> [<ITEM-TAG> ...] - count followed by items
 =cut
 
-sub INT          () { 0x20 } # 0b00100000
+sub VARINT       () { 0x20 } # 0b00100000
+sub ZIGZAG       () { 0x21 } # 0b00100001
 sub FLOAT        () { 0x22 } # 0b00100010
 sub STRING       () { 0x27 } # 0b00100111
 sub UNDEF        () { 0x25 } # 0b00100101
