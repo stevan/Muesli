@@ -67,17 +67,12 @@ sub encode_int {
     my @bytes;
     if ( $int < 0 ) {
         push @bytes => ZIGZAG;
-        $int = to_int32(($int << 1) ^ ($int >> 31))
+        $int = int32_to_zigzag( $int );
     }
     else {
         push @bytes => VARINT;
     }
-    while ( $int >= 0x80 ) {
-        my $b = ( $int & 0x7f ) | 0x80;
-        push @bytes => $b;
-        $int >>= 7;
-    }
-    push @bytes => $int;
+    push @bytes => int32_to_varint($int);
     return @bytes;
 }
 
@@ -85,18 +80,18 @@ sub encode_float {
     my $float = $_[0];
     my @bytes = (FLOAT); # tag byte ...
     my $u = unpack('N', pack('f', $float));
-    push @bytes => to_byte( $u       );
-    push @bytes => to_byte( $u >>  8 );
-    push @bytes => to_byte( $u >> 16 );
-    push @bytes => to_byte( $u >> 24 );
+    push @bytes => as_byte( $u       );
+    push @bytes => as_byte( $u >>  8 );
+    push @bytes => as_byte( $u >> 16 );
+    push @bytes => as_byte( $u >> 24 );
     return @bytes;
 }
 
 sub encode_string {
     my $string  = $_[0];
-    my @encoded = map encode_int( $_ ), unpack("U*", $string);
+    my @encoded = map int32_to_varint( $_ ), unpack("U*", $string);
     my @bytes   = (STRING); # tag byte ...    
-    push @bytes => encode_int( scalar @encoded );
+    push @bytes => int32_to_varint( scalar @encoded );
     push @bytes => @encoded;
     return @bytes;
 }

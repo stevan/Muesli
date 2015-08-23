@@ -20,26 +20,10 @@ sub decode_int {
 
     $idx++;
 
-    my $count = 0; # bit-shift counter
-    my $bits  = 0; # int to lay our bit patterns on
-
-    for ( my $i = $idx; $i <= scalar @$bytes; $i++ ) {
-        my $b = $bytes->[ $i ];
-        $bits |= ( $b & 0x7f ) << $count;
-        $count += 7;
-
-        if (( $b & 0x80 ) == 0) {
-            $bits = -(1 + (to_int32($bits) >> 1) )
-                if $tag == ZIGZAG;
-
-            return $bits, ($i + 1);
-        }
-        
-        die '[BAD INT] too many continuation bits'
-            if $count > 63;
-    }
-
-    die '[BAD INT] missing continuation bits';
+    my $bits = 0;
+    ($bits, $idx) = varint_to_int32( $idx, $bytes );
+    $bits = zigzag_to_int32($bits) if $tag == ZIGZAG;
+    return ($bits, $idx);
 }
 
 sub decode_float {
@@ -73,11 +57,11 @@ sub decode_string {
     $idx++;
 
     my $length;
-    ($length, $idx) = decode_int( $idx, $bytes );
+    ($length, $idx) = varint_to_int32( $idx, $bytes );
 
     my @cps;
     while ( $idx <= $#{$bytes} ) {
-        ($cps[ scalar @cps ], $idx) = decode_int( $idx, $bytes );
+        ($cps[ scalar @cps ], $idx) = varint_to_int32( $idx, $bytes );
         last if scalar @cps == $length;
     }
 

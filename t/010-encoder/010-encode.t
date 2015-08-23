@@ -99,19 +99,18 @@ is(
 # STRING
 
 is( 
-    bin_fmt(Museli::Encoder::encode( "fac\x{0327}ade" )),
+    bin_fmt(Museli::Encoder::encode_string( "fac\x{0327}ade" )),
     (join ' ' => 
-        bin_fmt(MAGIC_HEADER),
-        bin_fmt(STRING),      
-        '00100000 00001111', # length 
-        (   # tag       # varint
-            bin_fmt(VARINT), '01100110',            # f
-            bin_fmt(VARINT), '01100001',            # a
-            bin_fmt(VARINT), '01100011',            # c 
-            bin_fmt(VARINT), '10100111 00000110',   # \x{0327}
-            bin_fmt(VARINT), '01100001',            # a
-            bin_fmt(VARINT), '01100100',            # d
-            bin_fmt(VARINT), '01100101',            # e
+        bin_fmt(STRING), # tag
+        '00001000',      # length 
+        (                # codepoints
+            '01100110',           # f
+            '01100001',           # a
+            '01100011',           # c 
+            '10100111 00000110',  # \x{0327}
+            '01100001',           # a
+            '01100100',           # d
+            '01100101',           # e
         )
     ),
     '... façade encoded as expected'
