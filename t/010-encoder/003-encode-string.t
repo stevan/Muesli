@@ -4,16 +4,16 @@ use strict;
 use warnings;
 
 use Test::More;
-use Test::Museli::Util;
+use Test::Muesli::Util;
 
 BEGIN {
-    use_ok('Museli::Encoder');
+    use_ok('Muesli::Encoder');
 }
 
-use Museli::Util::Constants;
+use Muesli::Util::Constants;
 
 is( 
-    bin_fmt(Museli::Encoder::encode_string( "fac\x{0327}ade" )),
+    bin_fmt(Muesli::Encoder::encode_string( "fac\x{0327}ade" )),
     (join ' ' => 
         bin_fmt(STRING), # tag
         '00001000',      # length 

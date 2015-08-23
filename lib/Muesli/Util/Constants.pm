@@ -1,4 +1,4 @@
-package Museli::Util::Constants;
+package Muesli::Util::Constants;
 
 use strict;
 use warnings;

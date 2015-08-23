@@ -1,6 +1,6 @@
-# Museli
+# Muesli
 
-Museli is currently a playground for implementing a binary 
+Muesli is currently a playground for implementing a binary 
 serialization format for Perl/JSON style data structures 
 (Int, Float, String, Array, Hash, Undef), it is not meant
 to be for anything other then experimentation, learning 

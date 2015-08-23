@@ -4,16 +4,16 @@ use strict;
 use warnings;
 
 use Test::More;
-use Test::Museli::Util;
+use Test::Muesli::Util;
 
 BEGIN {
-    use_ok('Museli::Encoder');
+    use_ok('Muesli::Encoder');
 }
 
-use Museli::Util::Constants;
+use Muesli::Util::Constants;
 
 is( 
-    bin_fmt(Museli::Encoder::encode_int( 1 )),
+    bin_fmt(Muesli::Encoder::encode_int( 1 )),
     (join ' ' => 
         bin_fmt(VARINT),
         '00000001',
@@ -22,7 +22,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode_int( 300 )),
+    bin_fmt(Muesli::Encoder::encode_int( 300 )),
     (join ' ' => 
         bin_fmt(VARINT),
         '10101100 00000010',
@@ -31,7 +31,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode_int( -1 )),
+    bin_fmt(Muesli::Encoder::encode_int( -1 )),
     (join ' ' => 
         bin_fmt(ZIGZAG),
         '00000001',
@@ -40,7 +40,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode_int( -300 )),
+    bin_fmt(Muesli::Encoder::encode_int( -300 )),
     (join ' ' => 
         bin_fmt(ZIGZAG),
         '11010111 00000100',

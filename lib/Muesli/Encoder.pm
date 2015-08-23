@@ -1,4 +1,4 @@
-package Museli::Encoder;
+package Muesli::Encoder;
 
 use strict;
 use warnings;
@@ -10,8 +10,8 @@ use Scalar::Util qw[
     looks_like_number 
 ];
 
-use Museli::Util::Converters;
-use Museli::Util::Constants;
+use Muesli::Util::Converters;
+use Muesli::Util::Constants;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';

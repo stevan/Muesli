@@ -6,13 +6,13 @@ use warnings;
 use Test::More;
 
 BEGIN {
-    use_ok('Museli::Decoder');
+    use_ok('Muesli::Decoder');
 }
 
-use Museli::Util::Constants;
+use Muesli::Util::Constants;
 
 {
-    my ($val, $size) = Museli::Decoder::decode_string( 
+    my ($val, $size) = Muesli::Decoder::decode_string( 
         0, 
         [ 
             STRING,            # tag

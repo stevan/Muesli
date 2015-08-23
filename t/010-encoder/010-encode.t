@@ -4,18 +4,18 @@ use strict;
 use warnings;
 
 use Test::More;
-use Test::Museli::Util;
+use Test::Muesli::Util;
 
 BEGIN {
-    use_ok('Museli::Encoder');
+    use_ok('Muesli::Encoder');
 }
 
-use Museli::Util::Constants;
+use Muesli::Util::Constants;
 
 # INT
 
 is( 
-    bin_fmt(Museli::Encoder::encode( 1 )),
+    bin_fmt(Muesli::Encoder::encode( 1 )),
     (join ' ' => 
         bin_fmt(MAGIC_HEADER),
         bin_fmt(VARINT),
@@ -25,7 +25,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode( 300 )),
+    bin_fmt(Muesli::Encoder::encode( 300 )),
     (join ' ' => 
         bin_fmt(MAGIC_HEADER),
         bin_fmt(VARINT),
@@ -37,7 +37,7 @@ is(
 # FLOAT
 
 is( 
-    bin_fmt(Museli::Encoder::encode( 0.15625 )),
+    bin_fmt(Muesli::Encoder::encode( 0.15625 )),
     (join ' ' => 
         bin_fmt(MAGIC_HEADER),
         bin_fmt(FLOAT), 
@@ -47,7 +47,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode( 1.0 )),
+    bin_fmt(Muesli::Encoder::encode( 1.0 )),
     (join ' ' => 
         bin_fmt(MAGIC_HEADER),
         bin_fmt(FLOAT), 
@@ -57,7 +57,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode( 0.0 )),
+    bin_fmt(Muesli::Encoder::encode( 0.0 )),
     (join ' ' => 
         bin_fmt(MAGIC_HEADER),
         bin_fmt(FLOAT), 
@@ -67,7 +67,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode( -0.0 )),
+    bin_fmt(Muesli::Encoder::encode( -0.0 )),
     (join ' ' => 
         bin_fmt(MAGIC_HEADER),
         bin_fmt(FLOAT), 
@@ -77,7 +77,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode( -2.0 )),
+    bin_fmt(Muesli::Encoder::encode( -2.0 )),
     (join ' ' => 
         bin_fmt(MAGIC_HEADER),
         bin_fmt(FLOAT), 
@@ -87,7 +87,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode( 25 )),
+    bin_fmt(Muesli::Encoder::encode( 25 )),
     (join ' ' => 
         bin_fmt(MAGIC_HEADER),
         bin_fmt(FLOAT), 
@@ -99,7 +99,7 @@ is(
 # STRING
 
 is( 
-    bin_fmt(Museli::Encoder::encode_string( "fac\x{0327}ade" )),
+    bin_fmt(Muesli::Encoder::encode_string( "fac\x{0327}ade" )),
     (join ' ' => 
         bin_fmt(STRING), # tag
         '00001000',      # length 

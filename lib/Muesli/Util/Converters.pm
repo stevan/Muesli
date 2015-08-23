@@ -1,4 +1,4 @@
-package Museli::Util::Converters;
+package Muesli::Util::Converters;
 
 use strict;
 use warnings;

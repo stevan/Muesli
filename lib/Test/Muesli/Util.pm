@@ -1,4 +1,4 @@
-package Test::Museli::Util;
+package Test::Muesli::Util;
 
 use strict;
 use warnings;

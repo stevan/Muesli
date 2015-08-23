@@ -4,18 +4,18 @@ use strict;
 use warnings;
 
 use Test::More;
-use Test::Museli::Util;
+use Test::Muesli::Util;
 
 BEGIN {
-    use_ok('Museli::Decoder');
+    use_ok('Muesli::Decoder');
 }
 
-use Museli::Util::Constants;
+use Muesli::Util::Constants;
 
 # test cases from https://en.wikipedia.org/wiki/Single-precision_floating-point_format
 
 {
-    my ($val, $len) = Museli::Decoder::decode_float(
+    my ($val, $len) = Muesli::Decoder::decode_float(
         0, [ FLOAT, 0b00111110, 0b00100000, 0b00000000, 0b00000000 ]
     );
 
@@ -24,7 +24,7 @@ use Museli::Util::Constants;
 }
 
 {
-    my ($val, $len) = Museli::Decoder::decode_float(
+    my ($val, $len) = Muesli::Decoder::decode_float(
         0, [ FLOAT, 0b00111111, 0b10000000, 0b00000000, 0b00000000 ]
     );
 
@@ -33,7 +33,7 @@ use Museli::Util::Constants;
 }
 
 {
-    my ($val, $len) = Museli::Decoder::decode_float(
+    my ($val, $len) = Muesli::Decoder::decode_float(
         0, [ FLOAT, 0b00000000, 0b00000000, 0b00000000, 0b00000000 ]
     );
 
@@ -42,7 +42,7 @@ use Museli::Util::Constants;
 }
 
 {
-    my ($val, $len) = Museli::Decoder::decode_float(
+    my ($val, $len) = Muesli::Decoder::decode_float(
         0, [ FLOAT, 0b10000000, 0b00000000, 0b00000000, 0b00000000 ]
     );
 
@@ -51,7 +51,7 @@ use Museli::Util::Constants;
 }
 
 {
-    my ($val, $len) = Museli::Decoder::decode_float(
+    my ($val, $len) = Muesli::Decoder::decode_float(
         0, [ FLOAT, 0b11000000, 0b00000000, 0b00000000, 0b00000000 ]
     );
 
@@ -60,7 +60,7 @@ use Museli::Util::Constants;
 }
 
 {
-    my ($val, $len) = Museli::Decoder::decode_float(
+    my ($val, $len) = Muesli::Decoder::decode_float(
         0, [ FLOAT, 0b01000001, 0b11001000, 0b00000000, 0b00000000 ]
     );
 

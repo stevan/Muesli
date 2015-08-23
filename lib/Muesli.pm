@@ -1,4 +1,4 @@
-package Museli;
+package Muesli;
 
 use strict;
 use warnings;

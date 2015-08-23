@@ -4,18 +4,18 @@ use strict;
 use warnings;
 
 use Test::More;
-use Test::Museli::Util;
+use Test::Muesli::Util;
 
 BEGIN {
-    use_ok('Museli::Encoder');
+    use_ok('Muesli::Encoder');
 }
 
-use Museli::Util::Constants;
+use Muesli::Util::Constants;
 
 # test cases from https://en.wikipedia.org/wiki/Single-precision_floating-point_format
 
 is( 
-    bin_fmt(Museli::Encoder::encode_float( 0.15625 )),
+    bin_fmt(Muesli::Encoder::encode_float( 0.15625 )),
     (join ' ' => 
         bin_fmt(FLOAT), 
         '00111110 00100000 00000000 00000000',
@@ -24,7 +24,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode_float( 1.0 )),
+    bin_fmt(Muesli::Encoder::encode_float( 1.0 )),
     (join ' ' => 
         bin_fmt(FLOAT), 
         '00111111 10000000 00000000 00000000',
@@ -33,7 +33,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode_float( 0.0 )),
+    bin_fmt(Muesli::Encoder::encode_float( 0.0 )),
     (join ' ' => 
         bin_fmt(FLOAT), 
         '00000000 00000000 00000000 00000000',
@@ -42,7 +42,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode_float( -0.0 )),
+    bin_fmt(Muesli::Encoder::encode_float( -0.0 )),
     (join ' ' => 
         bin_fmt(FLOAT), 
         '10000000 00000000 00000000 00000000',
@@ -51,7 +51,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode_float( -2.0 )),
+    bin_fmt(Muesli::Encoder::encode_float( -2.0 )),
     (join ' ' => 
         bin_fmt(FLOAT), 
         '11000000 00000000 00000000 00000000',
@@ -60,7 +60,7 @@ is(
 );
 
 is( 
-    bin_fmt(Museli::Encoder::encode_float( 25 )),
+    bin_fmt(Muesli::Encoder::encode_float( 25 )),
     (join ' ' => 
         bin_fmt(FLOAT), 
         '01000001 11001000 00000000 00000000',

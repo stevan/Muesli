@@ -1,10 +1,10 @@
-package Museli::Decoder;
+package Muesli::Decoder;
 
 use strict;
 use warnings;
 
-use Museli::Util::Converters;
-use Museli::Util::Constants;
+use Muesli::Util::Converters;
+use Muesli::Util::Constants;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
