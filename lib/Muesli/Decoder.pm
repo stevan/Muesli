@@ -3,18 +3,48 @@ package Muesli::Decoder;
 use strict;
 use warnings;
 
+use Muesli::Util::Devel;
 use Muesli::Util::Converters;
 use Muesli::Util::Constants;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
+sub decode {
+    my $bytes = $_[0];
+    my $idx   = 0;
+    my $value;
+
+    return $value;
+}
+
+sub decode_array {
+    my $idx   = $_[0];
+    my $bytes = $_[1];
+}
+
+sub decode_hash {
+    my $idx   = $_[0];
+    my $bytes = $_[1];
+}
+
+sub decode_undef {
+    my $idx   = $_[0];
+    my $bytes = $_[1];
+    my $tag   = $bytes->[ $idx ];
+
+    die '[BAD TAG] Missing the UNDEF tag, instead found ' . (sprintf "%x" => $tag)
+        if $tag != UNDEF;    
+
+    return (undef, $idx + 1);
+}
+
 sub decode_int {
     my $idx   = $_[0];
     my $bytes = $_[1];
     my $tag   = $bytes->[ $idx ];
 
-    die '[BAD INT] Missing the VARINT or ZIGZAG tags, instead found ' . (sprintf "%x" => $tag)
+    die '[BAD TAG] Missing the VARINT or ZIGZAG tags, instead found ' . (sprintf "%x" => $tag)
         if $tag != VARINT
         && $tag != ZIGZAG;
 
@@ -30,7 +60,7 @@ sub decode_float {
     my $idx   = $_[0];
     my $bytes = $_[1];
 
-    die '[BAD FLOAT] Missing the FLOAT tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
+    die '[BAD TAG] Missing the FLOAT tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
         if $bytes->[ $idx ] != FLOAT;   
 
     $idx++; 
@@ -51,7 +81,7 @@ sub decode_string {
     my $idx   = $_[0];
     my $bytes = $_[1];
 
-    die '[BAD STRING] Missing the STRING tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
+    die '[BAD TAG] Missing the STRING tag, instead found ' . (sprintf "%x" => $bytes->[ $idx ])
         if $bytes->[ $idx ] != STRING;  
 
     $idx++;
