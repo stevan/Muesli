@@ -21,7 +21,10 @@ sub encode {
 
     my @bytes = (MAGIC_HEADER);
 
-    if ( ref $data ) {
+    if ( not defined $data ) {
+        push @bytes => encode_undef( $data );
+    }
+    elsif ( ref $data ) {
 
         die '[PANIC] Currently blessed items are not supported'
             if blessed $data;

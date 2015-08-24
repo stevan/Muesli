@@ -117,4 +117,15 @@ is(
     '... façade encoded as expected'
 );
 
+# UNDEF 
+
+is( 
+    bin_fmt(Muesli::Encoder::encode( undef )),
+    (join ' ' => 
+        bin_fmt(MAGIC_HEADER),
+        bin_fmt(UNDEF) # just the tag ma'am
+    ),
+    '... undef encoded as expected'
+);
+
 done_testing;
