@@ -85,7 +85,10 @@ sub encode_array {
 }
 
 sub encode_hash {
+    my $hash = $_[0];
+    my @bytes;
 
+    return @bytes;
 }
 
 sub encode_undef { return (UNDEF) }
