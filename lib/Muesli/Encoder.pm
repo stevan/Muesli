@@ -7,7 +7,6 @@ use B;
 use Scalar::Util qw[ 
     reftype
     blessed 
-    looks_like_number 
 ];
 
 use Muesli::Util::Devel;
