@@ -128,4 +128,22 @@ is(
     '... undef encoded as expected'
 );
 
+# ARRAY 
+
+is( 
+    bin_fmt(Muesli::Encoder::encode( [ 1, 300, -1, -300 ] )),
+    (join ' ' => 
+        bin_fmt(MAGIC_HEADER),
+        bin_fmt(ARRAY), # tag
+        '00001010',      # length 
+        (                # elements
+            (bin_fmt(VARINT), '00000001'),           # 1
+            (bin_fmt(VARINT), '10101100 00000010'),  # 300 
+            (bin_fmt(ZIGZAG), '00000001'),           # -1
+            (bin_fmt(ZIGZAG), '11010111 00000100'),  # -300
+        )
+    ),
+    '... array encoded as expected'
+);
+
 done_testing;
