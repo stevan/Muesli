@@ -99,8 +99,9 @@ is(
 # STRING
 
 is( 
-    bin_fmt(Muesli::Encoder::encode_string( "fac\x{0327}ade" )),
+    bin_fmt(Muesli::Encoder::encode( "fac\x{0327}ade" )),
     (join ' ' => 
+        bin_fmt(MAGIC_HEADER),
         bin_fmt(STRING), # tag
         '00001000',      # length 
         (                # codepoints
