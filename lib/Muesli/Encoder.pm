@@ -17,10 +17,14 @@ use Muesli::Util::Constants;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-sub encode {
+sub encode { 
+    return (MAGIC_HEADER, encode_data( @_ ));
+}
+
+sub encode_data {
     my ($data) = @_;
 
-    my @bytes = (MAGIC_HEADER);
+    my @bytes;
 
     if ( not defined $data ) {
         LOG(INFO => 'Encoding UNDEF') if DEBUG;
