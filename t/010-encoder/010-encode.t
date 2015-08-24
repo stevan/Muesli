@@ -87,13 +87,13 @@ is(
 );
 
 is( 
-    bin_fmt(Muesli::Encoder::encode( 25 )),
+    bin_fmt(Muesli::Encoder::encode( 25.0 )),
     (join ' ' => 
         bin_fmt(MAGIC_HEADER),
         bin_fmt(FLOAT), 
         '01000001 11001000 00000000 00000000',
     ),
-    '... 25 encoded as expected'
+    '... 25.0 encoded as expected'
 );
 
 # STRING

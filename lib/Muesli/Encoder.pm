@@ -49,21 +49,23 @@ sub encode {
     else { 
         LOG(INFO => 'Encoding a non-ref') if DEBUG;
 
-        if ( looks_like_number( $data ) ) {
-            LOG(INFO => 'Encoding a number') if DEBUG;
+        my $flags = B::svref_2object(\$data)->FLAGS;
 
-            if ( B::svref_2object( \$data )->isa('B::NV') ) { # is a float?
-                LOG(INFO => 'Encoding FLOAT') if DEBUG;
-                push @bytes => encode_float( $data );
-            }
-            else {
-                LOG(INFO => 'Encoding INT') if DEBUG;
-                push @bytes => encode_int( $data );
-            }
+        if (( $flags & B::SVp_IOK ) == B::SVp_IOK ) {
+            LOG(INFO => 'Encoding INT') if DEBUG;
+            push @bytes => encode_int( $data );
         }
-        else {
+        elsif (( $flags & B::SVp_NOK ) == B::SVp_NOK ) {
+            LOG(INFO => 'Encoding FLOAT') if DEBUG;
+            push @bytes => encode_float( $data );
+        }
+        elsif (( $flags & B::SVp_POK ) == B::SVp_POK ) {
             LOG(INFO => 'Encoding STRING') if DEBUG;
             push @bytes => encode_string( $data );
+        }
+        else {
+            LOG(FATAL => 'Attempting to encode an unsupported value type %s', $flags) if DEBUG;
+            die '[PANIC] Currently scalars with the following flags (' . $flags . ') are not supported'
         }
     }
     
