@@ -12,15 +12,84 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 sub decode {
     my $bytes = $_[0];
-    my $idx   = 0;
+
+    my @header = MAGIC_HEADER();
+
+    my $idx;
+    for ( $idx = 0; $idx < $#header; $idx++ ) {
+        die '[BAD HEADER] Unable to match the magic header to the start of the byte array'
+            unless $bytes->[ $idx ] == $header[ $idx ]
+    }
+
+    $idx++;
+
     my $value;
+    ($value, $idx) = decode_data( $idx, $bytes );
 
     return $value;
+}
+
+sub decode_data {
+    my $idx   = $_[0];    
+    my $bytes = $_[1];
+    my $tag   = $bytes->[ $idx ];
+
+    LOG(INFO => 'Decoding for tag(%08b)' => $tag) if DEBUG;
+
+    my $value;
+
+    if ( $tag == VARINT || $tag == ZIGZAG ) {
+        LOG(INFO => 'Decoding an INT') if DEBUG;
+        ($value, $idx) = decode_int( $idx, $bytes );
+    }
+    elsif ( $tag == FLOAT ) {
+        LOG(INFO => 'Decoding a FLOAT') if DEBUG;
+        ($value, $idx) = decode_float( $idx, $bytes );   
+    }
+    elsif ( $tag == STRING ) {
+        LOG(INFO => 'Decoding a STRING') if DEBUG;
+        ($value, $idx) = decode_string( $idx, $bytes );
+    }
+    elsif ( $tag == UNDEF ) {
+        LOG(INFO => 'Decoding a UNDEF') if DEBUG;
+        ($value, $idx) = decode_undef( $idx, $bytes );
+    }
+    elsif ( $tag == HASH ) {
+        LOG(INFO => 'Decoding a HASH') if DEBUG;
+        ($value, $idx) = decode_hash( $idx, $bytes );
+    }
+    elsif ( $tag == ARRAY ) {
+        LOG(INFO => 'Decoding a ARRAY') if DEBUG;
+        ($value, $idx) = decode_array( $idx, $bytes );
+    }
+    else {
+        die '[BAD TAG] I do not recognize this tag (' . (sprintf "%08b" => $tag) . ')'; 
+    }
+
+    return $value, $idx;
 }
 
 sub decode_array {
     my $idx   = $_[0];
     my $bytes = $_[1];
+    my $tag   = $bytes->[ $idx ];
+
+    die '[BAD TAG] Missing the ARRAY tag, instead found ' . (sprintf "%x" => $tag)
+        if $tag != ARRAY; 
+
+    $idx++;
+
+    my $length;
+    ($length, $idx) = varint_to_int32( $idx, $bytes );
+
+    my @items;
+    while ( $idx <= $#{$bytes} ) {
+        ($items[ scalar @items ], $idx) = decode_data( $idx, $bytes );
+        # FIXME: if we go past $length, we need to barf
+        last if scalar @items == $length;
+    }
+
+    return \@items, $idx;    
 }
 
 sub decode_hash {
@@ -92,6 +161,7 @@ sub decode_string {
     my @cps;
     while ( $idx <= $#{$bytes} ) {
         ($cps[ scalar @cps ], $idx) = varint_to_int32( $idx, $bytes );
+        # FIXME: if we go past $length, we need to barf
         last if scalar @cps == $length;
     }
 
