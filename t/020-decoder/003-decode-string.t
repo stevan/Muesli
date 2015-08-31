@@ -11,6 +11,8 @@ BEGIN {
 
 use Muesli::Util::Constants;
 
+# http://docstore.mik.ua/orelly/perl4/cook/ch01_05.htm
+
 {
     my ($val, $size) = Muesli::Decoder::decode_string( 
         0, 

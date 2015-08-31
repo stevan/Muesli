@@ -38,6 +38,8 @@ sub as_int32 { $_[0] & 0xffffff }
 ## ----------------------------------------------
 ## Conversions from native to encoded data types
 ## ----------------------------------------------
+## See https://developers.google.com/protocol-buffers/docs/encoding
+## ----------------------------------------------
 
 sub int32_to_varint {
     my $int = $_[0];

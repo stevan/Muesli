@@ -12,6 +12,8 @@ BEGIN {
 
 use Muesli::Util::Constants;
 
+# http://docstore.mik.ua/orelly/perl4/cook/ch01_05.htm
+
 is( 
     bin_fmt(Muesli::Encoder::encode_string( "fac\x{0327}ade" )),
     (join ' ' => 
