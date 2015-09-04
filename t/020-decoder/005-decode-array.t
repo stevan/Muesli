@@ -4,12 +4,12 @@ use strict;
 use warnings;
 
 use Test::More;
-use Test::Muesli::Util;
 
 BEGIN {
     use_ok('Muesli::Decoder');
 }
 
+use Muesli::Util::Devel qw[ FORMAT_BINARY ];
 use Muesli::Util::Constants;
 
 {

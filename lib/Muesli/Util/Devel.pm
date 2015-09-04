@@ -14,7 +14,7 @@ our @EXPORT = qw(
 sub import {
     my $from    = shift;
     my $to      = caller;
-    my @imports = @_ || @EXPORT;
+    my @imports = @_ ? @_ : @EXPORT;
 
     no strict 'refs';
     foreach my $i ( @imports ) {
@@ -30,6 +30,8 @@ sub LOG {
     my ($level, $msg, @args) = @_;
     warn sprintf "[%s] [%s] %s - $msg" => $$, scalar localtime, $level, @args;
 }
+
+sub FORMAT_BINARY { join ' ' => map { sprintf '%08b' => $_ } @_ }
 
 1;
 
