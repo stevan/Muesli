@@ -24,7 +24,7 @@ sub import {
 
 ## --------------------------
 
-sub DEBUG { $ENV{MUESLI_DEBUG} || 0 }
+sub DEBUG { $ENV{MUESLI_DEBUG} // 0 }
 
 sub LOG {
     my ($level, $msg, @args) = @_;
