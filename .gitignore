@@ -1,0 +1,7 @@
+MYMETA.*
+blib
+pm_to_blib
+nytprof*
+.DS_Store
+Makefile*
+cover_db
