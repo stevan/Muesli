@@ -35,37 +35,33 @@ sub decode_data {
 
     LOG(INFO => 'Decoding for tag(%08b)' => $tag) if DEBUG;
 
-    my $value;
-
     if ( $tag == VARINT || $tag == ZIGZAG ) {
         LOG(INFO => 'Decoding an INT') if DEBUG;
-        ($value, $idx) = decode_int( $idx, $bytes );
+        return decode_int( $idx, $bytes );
     }
     elsif ( $tag == FLOAT ) {
         LOG(INFO => 'Decoding a FLOAT') if DEBUG;
-        ($value, $idx) = decode_float( $idx, $bytes );   
+        return decode_float( $idx, $bytes );   
     }
     elsif ( $tag == STRING ) {
         LOG(INFO => 'Decoding a STRING') if DEBUG;
-        ($value, $idx) = decode_string( $idx, $bytes );
+        return decode_string( $idx, $bytes );
     }
     elsif ( $tag == UNDEF ) {
         LOG(INFO => 'Decoding a UNDEF') if DEBUG;
-        ($value, $idx) = decode_undef( $idx, $bytes );
+        return decode_undef( $idx, $bytes );
     }
     elsif ( $tag == HASH ) {
         LOG(INFO => 'Decoding a HASH') if DEBUG;
-        ($value, $idx) = decode_hash( $idx, $bytes );
+        return decode_hash( $idx, $bytes );
     }
     elsif ( $tag == ARRAY ) {
         LOG(INFO => 'Decoding a ARRAY') if DEBUG;
-        ($value, $idx) = decode_array( $idx, $bytes );
+        return decode_array( $idx, $bytes );
     }
     else {
         die '[BAD TAG] I do not recognize this tag (' . (sprintf "%08b" => $tag) . ')'; 
     }
-
-    return $value, $idx;
 }
 
 sub decode_array {
@@ -170,11 +166,11 @@ sub decode_string {
 
     (my $length, $idx) = varint_to_int32( $idx, $bytes );
 
-    my $string = join "" => map chr, @{ $bytes }[ $idx .. ($idx + $length - 1) ];
-
+    my $new_idx = $idx + $length;
+    my $string  = join "" => map chr, @{ $bytes }[ $idx .. ($new_idx - 1) ];
     utf8::decode($string);
 
-    return $string, $idx + $length;
+    return $string, $new_idx;
 }
 
 1;
