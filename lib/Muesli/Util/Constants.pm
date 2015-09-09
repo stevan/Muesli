@@ -45,13 +45,13 @@ sub MAGIC_HEADER () { (0x3d, 0x6d, 0x73, 0x6c) } # =msl
     ARRAY             | 0x2b | 0b00101011 | <COUNT-VARINT> [<ITEM-TAG> ...] - count followed by items
 =cut
 
-sub VARINT       () { 0x20 } # 0b00100000
-sub ZIGZAG       () { 0x21 } # 0b00100001
-sub FLOAT        () { 0x22 } # 0b00100010
-sub STRING       () { 0x27 } # 0b00100111
-sub UNDEF        () { 0x25 } # 0b00100101
-sub HASH         () { 0x2a } # 0b00101010
-sub ARRAY        () { 0x2b } # 0b00101011
+sub VARINT () { 0x20 } # 0b00100000
+sub ZIGZAG () { 0x21 } # 0b00100001
+sub FLOAT  () { 0x22 } # 0b00100010
+sub STRING () { 0x27 } # 0b00100111
+sub UNDEF  () { 0x25 } # 0b00100101
+sub HASH   () { 0x2a } # 0b00101010
+sub ARRAY  () { 0x2b } # 0b00101011
 
 1;
 
