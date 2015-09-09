@@ -15,7 +15,7 @@ use Muesli::Util::Constants;
 # INT
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( 1 )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( 1 ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(VARINT),
@@ -25,7 +25,7 @@ is(
 );
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( 300 )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( 300 ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(VARINT),
@@ -37,7 +37,7 @@ is(
 # FLOAT
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( 0.15625 )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( 0.15625 ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(FLOAT), 
@@ -47,7 +47,7 @@ is(
 );
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( 1.0 )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( 1.0 ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(FLOAT), 
@@ -57,7 +57,7 @@ is(
 );
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( 0.0 )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( 0.0 ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(FLOAT), 
@@ -67,7 +67,7 @@ is(
 );
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( -0.0 )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( -0.0 ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(FLOAT), 
@@ -77,7 +77,7 @@ is(
 );
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( -2.0 )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( -2.0 ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(FLOAT), 
@@ -87,7 +87,7 @@ is(
 );
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( 25.0 )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( 25.0 ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(FLOAT), 
@@ -99,7 +99,7 @@ is(
 # STRING
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( "fac\x{0327}ade" )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( "fac\x{0327}ade" ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(STRING), # tag
@@ -120,7 +120,7 @@ is(
 # UNDEF 
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( undef )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( undef ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(UNDEF) # just the tag ma'am
@@ -131,7 +131,7 @@ is(
 # ARRAY 
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( [ 1, 300, -1, -300 ] )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( [ 1, 300, -1, -300 ] ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(ARRAY), # tag
@@ -149,7 +149,7 @@ is(
 # HASH 
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( { foo => 1 } )),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( { foo => 1 } ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(HASH), # tag
@@ -165,7 +165,7 @@ is(
 # OMGBBQ!!!!1!!
 
 is( 
-    FORMAT_BINARY(Muesli::Encoder::encode( 
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( 
         { 
             foo => 1,
             bar => [ 1, -300 ],
@@ -173,7 +173,7 @@ is(
                 gorch => 1000
             }
         } 
-    )),
+    ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(HASH), # tag

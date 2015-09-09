@@ -17,7 +17,7 @@ our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 sub encode { 
-    return (MAGIC_HEADER, encode_data( @_ ));
+    return [ MAGIC_HEADER, encode_data( @_ ) ];
 }
 
 sub encode_data {
