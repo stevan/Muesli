@@ -23,8 +23,7 @@ sub decode {
 
     $idx++;
 
-    my $value;
-    ($value, $idx) = decode_data( $idx, $bytes );
+    (my $value, $idx) = decode_data( $idx, $bytes );
 
     return $value;
 }
@@ -79,8 +78,7 @@ sub decode_array {
 
     $idx++;
 
-    my $length;
-    ($length, $idx) = varint_to_int32( $idx, $bytes );
+    (my $length, $idx) = varint_to_int32( $idx, $bytes );
 
     my @items;
     while ( $idx <= $#{$bytes} ) {
@@ -119,8 +117,7 @@ sub decode_int {
 
     $idx++;
 
-    my $bits = 0;
-    ($bits, $idx) = varint_to_int32( $idx, $bytes );
+    (my $bits, $idx) = varint_to_int32( $idx, $bytes );
     $bits = zigzag_to_int32($bits) if $tag == ZIGZAG;
     return ($bits, $idx);
 }
@@ -155,8 +152,7 @@ sub decode_string {
 
     $idx++;
 
-    my $length;
-    ($length, $idx) = varint_to_int32( $idx, $bytes );
+    (my $length, $idx) = varint_to_int32( $idx, $bytes );
 
     my @cps;
     while ( $idx <= $#{$bytes} ) {
