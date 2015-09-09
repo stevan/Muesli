@@ -21,12 +21,14 @@ my $data = {
             contains => [ 
                 'mañy', 
                 1_000_000, 
-                { 'öf' => 'levelß' }
+                { 'öf' => 'levelß' },
             ]
         }
     },
     and_lots_of => [ 1 .. 1000 ],
-    numbers => undef
+    numbers => undef,
+    hello_world_in_jp => '日本語',
+    oh_snap_that_worked => [ 'thanks', 2, 'Dāmiæn', 'Grÿskî' ]
 };
 
 is_deeply( Muesli::decode( Muesli::encode( $data ) ), $data, '... roundtrippin it' );
