@@ -22,7 +22,7 @@ my %WriteMakefileArgs = (
         # tests ..
         'Test::More'         => 0,        
     },
-    'clean'              => { FILES => 'cover_db/ nytprof/' }, # callparser1.h' },
+    'clean'              => { FILES => 'cover_db/ nytprof/ nytprof.out' },
     'test'               => { RECURSIVE_TEST_FILES => 1 },
 );
 
