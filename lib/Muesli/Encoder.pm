@@ -4,10 +4,7 @@ use strict;
 use warnings;
 
 use B;
-use Scalar::Util qw[ 
-    reftype
-    blessed 
-];
+use Scalar::Util qw[ blessed ];
 
 use Muesli::Util::Devel;
 use Muesli::Util::Converters;
@@ -31,7 +28,7 @@ sub encode_data {
         die '[PANIC] Currently blessed items are not supported'
             if blessed $_[0];
 
-        my $type = reftype $_[0];
+        my $type = ref $_[0];
         if ( $type eq 'ARRAY' ) {
             LOG(INFO => 'Encoding ARRAY ref') if DEBUG;
             return encode_array( $_[0] );
