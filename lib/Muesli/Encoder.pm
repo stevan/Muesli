@@ -96,7 +96,7 @@ sub encode_hash {
 sub encode_undef { return (UNDEF) }
 
 sub encode_int {
-    my $int   = $_[0];
+    my $int = $_[0];
     my @bytes;
     if ( $int < 0 ) {
         push @bytes => ZIGZAG;
