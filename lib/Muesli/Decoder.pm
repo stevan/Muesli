@@ -91,6 +91,22 @@ sub decode_array {
 sub decode_hash {
     my $idx   = $_[0];
     my $bytes = $_[1];
+    my $tag   = $bytes->[ $idx ];
+
+    die '[BAD TAG] Missing the HASH tag, instead found ' . (sprintf "%x" => $tag)
+        if $tag != HASH; 
+
+    $idx++;
+
+    (my $length, $idx) = varint_to_int32( $idx, $bytes );
+
+    my %items;
+    while ( $idx <= $#{$bytes} ) {
+        (my $key,        $idx) =  decode_string( $idx, $bytes );
+        ($items{ $key }, $idx) =  decode_data( $idx, $bytes );
+    }
+
+    return \%items, $idx;    
 }
 
 sub decode_undef {

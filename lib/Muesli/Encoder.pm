@@ -85,9 +85,11 @@ sub encode_array {
 }
 
 sub encode_hash {
-    my $hash = $_[0];
-    my @bytes;
-
+    my $hash    = $_[0];
+    my @encoded = map { (encode_string( $_ ), encode_data( $hash->{ $_ } )) } keys %$hash;
+    my @bytes   = (HASH);
+    push @bytes => int32_to_varint( scalar @encoded );
+    push @bytes => @encoded;
     return @bytes;
 }
 
