@@ -27,4 +27,51 @@ is(
     '... array encoded as expected'
 );
 
+is( 
+    FORMAT_BINARY(Muesli::Encoder::encode_array( [ 1, "façade" ] )),
+    (join ' ' => 
+        FORMAT_BINARY(ARRAY), # tag
+        '00000010',      # length 
+        (                # elements
+            (FORMAT_BINARY(VARINT), '00000001'), # 1
+            (FORMAT_BINARY(STRING), # tag
+                '00000111',      # length 
+                (                # codepoints
+                    '01100110',           # f
+                    '01100001',           # a
+                    '11000011 10100111',  # ç 
+                    '01100001',           # a
+                    '01100100',           # d
+                    '01100101',           # e
+                )
+            )
+        )
+    ),
+    '... array encoded as expected'
+);
+
+is( 
+    FORMAT_BINARY(Muesli::Encoder::encode_array( [ 1, "façade", 10 ] )),
+    (join ' ' => 
+        FORMAT_BINARY(ARRAY), # tag
+        '00000011',      # length 
+        (                # elements
+            (FORMAT_BINARY(VARINT), '00000001'), # 1
+            (FORMAT_BINARY(STRING), # tag
+                '00000111',      # length 
+                (                # codepoints
+                    '01100110',           # f
+                    '01100001',           # a
+                    '11000011 10100111',  # ç 
+                    '01100001',           # a
+                    '01100100',           # d
+                    '01100101',           # e
+                )
+            ),
+            (FORMAT_BINARY(VARINT), '00001010'), # 10
+        )
+    ),
+    '... array encoded as expected'
+);
+
 done_testing;

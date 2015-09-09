@@ -122,7 +122,7 @@ sub encode_float {
 
 sub encode_string {
     my $string  = $_[0];
-    my @encoded = map int32_to_varint( $_ ), unpack("U*", $string);
+    my @encoded = map ord, split '' => $string;
     my @bytes   = (STRING); # tag byte ...    
     push @bytes => int32_to_varint( scalar @encoded );
     push @bytes => @encoded;

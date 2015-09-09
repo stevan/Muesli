@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use utf8;
 
 use Test::More;
 
@@ -95,12 +96,11 @@ use Muesli::Util::Constants;
         [ 
             MAGIC_HEADER,      # header
             STRING,            # tag
-            0b00001000,        # length 
+            0b00000111,        # length 
             (                  # codepoints
                 0b01100110,             # f
                 0b01100001,             # a
-                0b01100011,             # c 
-                0b10100111, 0b00000110, # \x{0327}
+                0b11000011, 0b10100111, # ç 
                 0b01100001,             # a
                 0b01100100,             # d
                 0b01100101,             # e
@@ -108,7 +108,7 @@ use Muesli::Util::Constants;
         ],
     );
 
-    is($val, "fac\x{0327}ade", '... our binary data is fac\x{0327}ade');
+    is($val, "façade", '... our binary data is façade');
 }
 
 # undef 

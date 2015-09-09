@@ -99,16 +99,15 @@ is(
 # STRING
 
 is( 
-    FORMAT_BINARY(@{ Muesli::Encoder::encode( "fac\x{0327}ade" ) }),
+    FORMAT_BINARY(@{ Muesli::Encoder::encode( "façade" ) }),
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(STRING), # tag
-        '00001000',      # length 
+        '00000111',      # length 
         (                # codepoints
             '01100110',           # f
             '01100001',           # a
-            '01100011',           # c 
-            '10100111 00000110',  # \x{0327}
+            '11000011 10100111',  # ç 
             '01100001',           # a
             '01100100',           # d
             '01100101',           # e

@@ -170,14 +170,11 @@ sub decode_string {
 
     (my $length, $idx) = varint_to_int32( $idx, $bytes );
 
-    my @cps;
-    while ( $idx <= $#{$bytes} ) {
-        ($cps[ scalar @cps ], $idx) = varint_to_int32( $idx, $bytes );
-        # FIXME: if we go past $length, we need to barf
-        last if scalar @cps == $length;
-    }
+    my $string = join "" => map chr, @{ $bytes }[ $idx .. ($idx + $length - 1) ];
 
-    return pack('U*', @cps), $idx;
+    utf8::decode($string);
+
+    return $string, $idx + $length;
 }
 
 1;
