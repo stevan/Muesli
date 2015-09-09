@@ -44,13 +44,12 @@ sub as_int32 { $_[0] & 0xffffff }
 sub int32_to_varint {
     my $int = $_[0];
     my @bytes;
-    while ( $int >= 0x80 ) {
-        my $b = ( $int & 0x7f ) | 0x80;
+    while ( $int >= 0b10000000 ) {
+        my $b = ( $int & 0b01111111 ) | 0b10000000;
         push @bytes => $b;
         $int >>= 7;
     }
-    push @bytes => $int;
-    return @bytes;    
+    return @bytes, $int;    
 }
 
 sub varint_to_int32 {
