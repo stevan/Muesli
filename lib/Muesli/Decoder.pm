@@ -83,8 +83,6 @@ sub decode_array {
     my @items;
     while ( $idx <= $#{$bytes} ) {
         ($items[ scalar @items ], $idx) = decode_data( $idx, $bytes );
-        # FIXME: if we go past $length, we need to barf
-        last if scalar @items == $length;
     }
 
     return \@items, $idx;    
