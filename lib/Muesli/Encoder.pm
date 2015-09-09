@@ -21,28 +21,24 @@ sub encode {
 }
 
 sub encode_data {
-    my ($data) = @_;
-
-    my @bytes;
-
-    if ( not defined $data ) {
+    if ( not defined $_[0] ) {
         LOG(INFO => 'Encoding UNDEF') if DEBUG;
-        push @bytes => encode_undef( $data );
+        return encode_undef( $_[0] );
     }
-    elsif ( ref $data ) {
+    elsif ( ref $_[0] ) {
         LOG(INFO => 'Encoding a ref') if DEBUG;
 
         die '[PANIC] Currently blessed items are not supported'
-            if blessed $data;
+            if blessed $_[0];
 
-        my $type = reftype $data;
+        my $type = reftype $_[0];
         if ( $type eq 'ARRAY' ) {
             LOG(INFO => 'Encoding ARRAY ref') if DEBUG;
-            push @bytes => encode_array( $data );
+            return encode_array( $_[0] );
         }
         elsif ( $type eq 'HASH' ) {
             LOG(INFO => 'Encoding HASH ref') if DEBUG;
-            push @bytes => encode_hash( $data );
+            return encode_hash( $_[0] );
         }
         else {
             LOG(FATAL => 'Attempting to encode an unsupported reftype %s', $type) if DEBUG;
@@ -52,45 +48,38 @@ sub encode_data {
     else { 
         LOG(INFO => 'Encoding a non-ref') if DEBUG;
 
-        my $flags = B::svref_2object(\$data)->FLAGS;
+        my $flags = B::svref_2object(\$_[0])->FLAGS;
 
         if (( $flags & B::SVp_IOK ) == B::SVp_IOK ) {
             LOG(INFO => 'Encoding INT') if DEBUG;
-            push @bytes => encode_int( $data );
+            return encode_int( $_[0] );
         }
         elsif (( $flags & B::SVp_NOK ) == B::SVp_NOK ) {
             LOG(INFO => 'Encoding FLOAT') if DEBUG;
-            push @bytes => encode_float( $data );
+            return encode_float( $_[0] );
         }
         elsif (( $flags & B::SVp_POK ) == B::SVp_POK ) {
             LOG(INFO => 'Encoding STRING') if DEBUG;
-            push @bytes => encode_string( $data );
+            return encode_string( $_[0] );
         }
         else {
             LOG(FATAL => 'Attempting to encode an unsupported value type %s', $flags) if DEBUG;
             die '[PANIC] Currently scalars with the following flags (' . $flags . ') are not supported'
         }
     }
-    
-    return @bytes;
 }
 
 sub encode_array {
-    my $array   = $_[0];
-    my @encoded = map { encode_data( $_ ) } @$array;
-    my @bytes   = (ARRAY);
-    push @bytes => int32_to_varint( scalar @$array );
-    push @bytes => @encoded;    
+    my @array   = @{ $_[0] };
+    my @encoded = map encode_data( $_ ), @array;
+    my @bytes   = (ARRAY, int32_to_varint( 0+@array ), @encoded);
     return @bytes;
 }
 
 sub encode_hash {
-    my $hash    = $_[0];
-    my @keys    = keys %$hash;
-    my @encoded = map { encode_string( $_ ), encode_data( $hash->{ $_ } ) } sort @keys;
-    my @bytes   = (HASH);
-    push @bytes => int32_to_varint( scalar @keys );
-    push @bytes => @encoded;
+    my @keys    = keys %{ $_[0] };
+    my @encoded = map { encode_string( $_ ), encode_data( $_[0]->{ $_ } ) } sort @keys;
+    my @bytes   = (HASH, int32_to_varint( 0+@keys ), @encoded);
     return @bytes;
 }
 
@@ -100,33 +89,29 @@ sub encode_int {
     my $int = $_[0];
     my @bytes;
     if ( $int < 0 ) {
-        push @bytes => ZIGZAG;
-        $int = int32_to_zigzag( $int );
+        @bytes = (ZIGZAG, int32_to_varint( int32_to_zigzag( $int ) ));
     }
     else {
-        push @bytes => VARINT;
+        @bytes = (VARINT, int32_to_varint( $int ));
     }
-    push @bytes => int32_to_varint($int);
     return @bytes;
 }
 
 sub encode_float {
-    my $float = $_[0];
-    my @bytes = (FLOAT); # tag byte ...
-    my $u = unpack('N', pack('f', $float));
-    push @bytes => as_byte( $u       );
-    push @bytes => as_byte( $u >>  8 );
-    push @bytes => as_byte( $u >> 16 );
-    push @bytes => as_byte( $u >> 24 );
+    my $float = unpack('N', pack('f', $_[0]));
+    my @bytes = (
+        FLOAT, # tag byte ...
+        as_byte( $float       ),
+        as_byte( $float >>  8 ),
+        as_byte( $float >> 16 ),
+        as_byte( $float >> 24 ),
+    );
     return @bytes;
 }
 
 sub encode_string {
-    my $string  = $_[0];
-    my @encoded = map ord, split '' => $string;
-    my @bytes   = (STRING); # tag byte ...    
-    push @bytes => int32_to_varint( scalar @encoded );
-    push @bytes => @encoded;
+    my @encoded = map ord, split '' => $_[0];
+    my @bytes   = (STRING, int32_to_varint( 0+@encoded ), @encoded);
     return @bytes;
 }
 
