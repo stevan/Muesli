@@ -78,13 +78,11 @@ sub varint_to_int32 {
 # zigzag
 
 sub int32_to_zigzag {
-    my $int = $_[0];
-    return as_int32(($int << 1) ^ ($int >> 31));
+    return as_int32(($_[0] << 1) ^ ($_[0] >> 31));
 }
 
 sub zigzag_to_int32 {
-    my $bits = $_[0];
-    return -(1 + (as_int32($bits) >> 1) );
+    return -(1 + (as_int32($_[0]) >> 1) );
 }
 
 1;
