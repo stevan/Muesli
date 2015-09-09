@@ -157,5 +157,53 @@ use Muesli::Util::Constants;
     is_deeply($val, { foo => 1 }, '... our binary data is { foo => 1 } as expected');
 }
 
+# OMGBBQ!!!!1!!
+
+{
+    my $val = Muesli::Decoder::decode( 
+        [ 
+            MAGIC_HEADER,
+            HASH, # tag
+            0b00000011, # length 
+            ( # elements
+                (STRING, 0b00000011, 0b01100010, 0b01100001, 0b01110010), # bar
+                (
+                    ARRAY, 
+                    0b00000010,
+                    (
+                        (VARINT, 0b00000001),             # 1
+                        (ZIGZAG, 0b11010111, 0b00000100), # -300 
+                    ),
+                ),
+
+                (STRING, 0b00000011, 0b01100010, 0b01100001, 0b01111010), # baz
+                (
+                    HASH, 
+                    0b00000001,
+                    (
+                        (STRING, 0b00000101, 0b01100111, 0b01101111, 0b01110010, 0b01100011, 0b01101000), # gorch
+                        (VARINT, 0b11101000, 0b00000111),                                                 # 1000 
+                    ),
+                ),
+
+                (STRING, 0b00000011, 0b01100110, 0b01101111, 0b01101111), # foo
+                (VARINT, 0b00000001),                                     # 1
+            ),
+        ],
+    );
+
+    is_deeply(
+        $val, 
+        { 
+            foo => 1,
+            bar => [ 1, -300 ],
+            baz => { 
+                gorch => 1000
+            }
+        }, 
+        '... our binary data is the complex data structure we expected'
+    );
+}
+
 
 done_testing;

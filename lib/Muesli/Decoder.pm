@@ -83,6 +83,7 @@ sub decode_array {
     my @items;
     while ( $idx <= $#{$bytes} ) {
         ($items[ scalar @items ], $idx) = decode_data( $idx, $bytes );
+        last if scalar @items == $length;
     }
 
     return \@items, $idx;    
@@ -104,6 +105,7 @@ sub decode_hash {
     while ( $idx <= $#{$bytes} ) {
         (my $key,        $idx) =  decode_string( $idx, $bytes );
         ($items{ $key }, $idx) =  decode_data( $idx, $bytes );
+        last if scalar keys %items == $length;
     }
 
     return \%items, $idx;    

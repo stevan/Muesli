@@ -79,16 +79,16 @@ sub encode_array {
     my $array   = $_[0];
     my @encoded = map { encode_data( $_ ) } @$array;
     my @bytes   = (ARRAY);
-    push @bytes => int32_to_varint( scalar @encoded );
+    push @bytes => int32_to_varint( scalar @$array );
     push @bytes => @encoded;    
     return @bytes;
 }
 
 sub encode_hash {
     my $hash    = $_[0];
-    my @encoded = map { (encode_string( $_ ), encode_data( $hash->{ $_ } )) } keys %$hash;
+    my @encoded = map { (encode_string( $_ ), encode_data( $hash->{ $_ } )) } sort keys %$hash;
     my @bytes   = (HASH);
-    push @bytes => int32_to_varint( scalar @encoded );
+    push @bytes => int32_to_varint( scalar keys %$hash );
     push @bytes => @encoded;
     return @bytes;
 }

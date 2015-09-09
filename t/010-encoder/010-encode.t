@@ -135,7 +135,7 @@ is(
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(ARRAY), # tag
-        '00001010',      # length 
+        '00000100',      # length 
         (                # elements
             (FORMAT_BINARY(VARINT), '00000001'),           # 1
             (FORMAT_BINARY(VARINT), '10101100 00000010'),  # 300 
@@ -153,13 +153,57 @@ is(
     (join ' ' => 
         FORMAT_BINARY(MAGIC_HEADER),
         FORMAT_BINARY(HASH), # tag
-        '00000111',      # length 
+        '00000001',      # length 
         (                # elements
             (FORMAT_BINARY(STRING), '00000011 01100110 01101111 01101111'), # foo
-            (FORMAT_BINARY(VARINT), '00000001'),                                     # 1
+            (FORMAT_BINARY(VARINT), '00000001'),                            # 1
         )
     ),
     '... hash encoded as expected'
+);
+
+# OMGBBQ!!!!1!!
+
+is( 
+    FORMAT_BINARY(Muesli::Encoder::encode( 
+        { 
+            foo => 1,
+            bar => [ 1, -300 ],
+            baz => { 
+                gorch => 1000
+            }
+        } 
+    )),
+    (join ' ' => 
+        FORMAT_BINARY(MAGIC_HEADER),
+        FORMAT_BINARY(HASH), # tag
+        '00000011',      # length 
+        (                # elements
+            (FORMAT_BINARY(STRING), '00000011 01100010 01100001 01110010'), # bar
+            (
+                FORMAT_BINARY(ARRAY), 
+                '00000010',
+                (
+                    (FORMAT_BINARY(VARINT), '00000001'),           # 1
+                    (FORMAT_BINARY(ZIGZAG), '11010111 00000100'),  # -300 
+                ),
+            ),
+
+            (FORMAT_BINARY(STRING), '00000011 01100010 01100001 01111010'), # baz
+            (
+                FORMAT_BINARY(HASH), 
+                '00000001',
+                (
+                    (FORMAT_BINARY(STRING), '00000101 01100111 01101111 01110010 01100011 01101000'), # gorch
+                    (FORMAT_BINARY(VARINT), '11101000 00000111'),                                     # 1000 
+                ),
+            ),
+
+            (FORMAT_BINARY(STRING), '00000011 01100110 01101111 01101111'), # foo
+            (FORMAT_BINARY(VARINT), '00000001'),                            # 1
+        ),
+    ),
+    '... bunch of random stuff encoded as expected'
 );
 
 done_testing;

@@ -16,7 +16,7 @@ is(
     FORMAT_BINARY(Muesli::Encoder::encode_array( [ 1, 300, -1, -300 ] )),
     (join ' ' => 
         FORMAT_BINARY(ARRAY), # tag
-        '00001010',      # length 
+        '00000100',      # length 
         (                # elements
             (FORMAT_BINARY(VARINT), '00000001'),           # 1
             (FORMAT_BINARY(VARINT), '10101100 00000010'),  # 300 

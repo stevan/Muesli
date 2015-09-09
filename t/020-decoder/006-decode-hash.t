@@ -17,7 +17,7 @@ use Muesli::Util::Constants;
         0, 
         [ 
             HASH, # tag
-            0b00000111,      # length 
+            0b00000001,      # length 
             (                # elements
                 STRING, 0b00000011, 0b01100110, 0b01101111, 0b01101111, # foo
                 VARINT, 0b00000001,                                     # 1

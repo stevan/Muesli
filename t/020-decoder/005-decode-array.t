@@ -17,7 +17,7 @@ use Muesli::Util::Constants;
         0, 
         [ 
             ARRAY, # tag
-            0b00001010,      # length 
+            0b00000100,      # length 
             (                # elements
                 (VARINT, 0b00000001),             # 1
                 (VARINT, 0b10101100, 0b00000010), # 300 
