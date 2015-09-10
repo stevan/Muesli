@@ -15,6 +15,9 @@ sub decode {
 
     my @header = MAGIC_HEADER();
 
+    die '[TRUNCATED] Not enough bytes for magic header' 
+        if $#header > $#{$bytes};
+
     my $idx;
     for ( $idx = 0; $idx < $#header; $idx++ ) {
         die '[BAD HEADER] Unable to match the magic header to the start of the byte array'
@@ -22,6 +25,9 @@ sub decode {
     }
 
     $idx++;
+
+    die '[TRUNCATED] Attempting access at offset (' . $idx . ') where byte length (' . $#{$bytes} . ')' 
+        if $idx > $#{$bytes};
 
     (my $value, $idx) = decode_data( $idx, $bytes );
 
@@ -31,7 +37,11 @@ sub decode {
 sub decode_data {
     my $idx   = $_[0];    
     my $bytes = $_[1];
-    my $tag   = $bytes->[ $idx ];
+
+    die '[TRUNCATED] Attempting access at offset (' . $idx . ') where byte length (' . $#{$bytes} . ')' 
+        if $idx > $#{$bytes};
+
+    my $tag = $bytes->[ $idx ];
 
     LOG(INFO => 'Decoding for tag(%08b)' => $tag) if DEBUG;
 
@@ -74,6 +84,9 @@ sub decode_array {
 
     $idx++;
 
+    die '[TRUNCATED] Attempting access at offset (' . $idx . ') where byte length (' . $#{$bytes} . ')' 
+        if $idx > $#{$bytes};
+
     (my $length, $idx) = varint_to_int32( $idx, $bytes );
 
     my @items;
@@ -81,6 +94,9 @@ sub decode_array {
         ($items[ scalar @items ], $idx) = decode_data( $idx, $bytes );
         last if scalar @items == $length;
     }
+
+    die '[TRUNCATED] Looking for (' . $length . ') ARRAY items, but only encountered (' . scalar @items . ')'
+        if scalar @items != $length;
 
     return \@items, $idx;    
 }
@@ -95,14 +111,20 @@ sub decode_hash {
 
     $idx++;
 
+    die '[TRUNCATED] Attempting access at offset (' . $idx . ') where byte length (' . $#{$bytes} . ')' 
+        if $idx > $#{$bytes};
+
     (my $length, $idx) = varint_to_int32( $idx, $bytes );
 
     my %items;
     while ( $idx <= $#{$bytes} ) {
-        (my $key,        $idx) =  decode_string( $idx, $bytes );
-        ($items{ $key }, $idx) =  decode_data( $idx, $bytes );
+        (my $key,        $idx) = decode_string( $idx, $bytes );    
+        ($items{ $key }, $idx) = decode_data( $idx, $bytes );
         last if scalar keys %items == $length;
     }
+
+    die '[TRUNCATED] Looking for (' . $length . ') HASH items, but only encountered (' . (scalar keys %items) . ')'
+        if (scalar keys %items) != $length;
 
     return \%items, $idx;    
 }
@@ -129,6 +151,9 @@ sub decode_int {
 
     $idx++;
 
+    die '[TRUNCATED] Attempting access at offset (' . $idx . ') where byte length (' . $#{$bytes} . ')' 
+        if $idx > $#{$bytes};
+
     (my $bits, $idx) = varint_to_int32( $idx, $bytes );
     $bits = zigzag_to_int32($bits) if $tag == ZIGZAG;
     return ($bits, $idx);
@@ -143,14 +168,14 @@ sub decode_float {
 
     $idx++; 
 
-    die '[BAD FLOAT] A float must be at least 4 bytes long, got truncated data'
+    die '[TRUNCATED] A float must be at least 4 bytes long, got truncated data'
         unless ($idx + 3) >= $#{$bytes};
 
     my $bits = 0; # int to lay our bit patterns on
-    $bits |= $bytes->[ $idx    ]      ;
-    $bits |= $bytes->[ $idx + 1] <<  8;
-    $bits |= $bytes->[ $idx + 2] << 16;
-    $bits |= $bytes->[ $idx + 3] << 24;
+    $bits |= $bytes->[ $idx     ]      ;
+    $bits |= $bytes->[ $idx + 1 ] <<  8;
+    $bits |= $bytes->[ $idx + 2 ] << 16;
+    $bits |= $bytes->[ $idx + 3 ] << 24;
 
     return unpack('f', pack('N', $bits)), ($idx + 4); # length is always 4
 }
@@ -164,9 +189,17 @@ sub decode_string {
 
     $idx++;
 
+    die '[TRUNCATED] Attempting access at offset (' . $idx . ') where byte length (' . $#{$bytes} . ')' 
+        if $idx > $#{$bytes};
+
     (my $length, $idx) = varint_to_int32( $idx, $bytes );
 
     my $new_idx = $idx + $length;
+
+    die '[TRUNCATED] Attempting access of slice (' . $idx . ', ' . ($new_idx - 1) . ') where byte length (' . $#{$bytes} . ')' 
+        if $idx           > $#{$bytes}
+        || ($new_idx - 1) > $#{$bytes};
+
     my $string  = join "" => map chr, @{ $bytes }[ $idx .. ($new_idx - 1) ];
     utf8::decode($string);
 
